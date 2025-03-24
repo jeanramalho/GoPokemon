@@ -21,9 +21,15 @@ class GoPokemonHomeViewController: UIViewController {
     
     private func setup(){
         
+        setupContentView()
         setupLocationManager()
         setHierarchy()
         setConstraints()
+    }
+    
+    private func setupContentView(){
+        let updateLocationButton = contentView.updateLocationButton
+        updateLocationButton.addTarget(self, action: #selector(centerPlayer), for: .touchUpInside)
     }
     
     private func setHierarchy(){
@@ -41,6 +47,23 @@ class GoPokemonHomeViewController: UIViewController {
             contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
+    
+    private func centerMapLocation(){
+        let mapa = self.contentView.mapView
+        
+        //Maneira menos verbosa e mais rapida de centralizar localização de usuário no mapa
+        if let userCoordinates = self.locationManager.location?.coordinate {
+            let region = MKCoordinateRegion(center: userCoordinates, latitudinalMeters: 200, longitudinalMeters: 200)
+            mapa.setRegion(region, animated: true)
+        }
+        
+    }
+    
+    @objc private func centerPlayer(){
+        centerMapLocation()
+    }
+    
+    
 }
 
 extension GoPokemonHomeViewController: MKMapViewDelegate, CLLocationManagerDelegate {
@@ -59,63 +82,18 @@ extension GoPokemonHomeViewController: MKMapViewDelegate, CLLocationManagerDeleg
         
         let map = contentView.mapView
         map.showsUserLocation = true
-        guard let location = locations.last else {return}
-//
-//        Maneira mais verbosa de centralizar localizacao do usuário no mapa
-//        let region: MKCoordinateRegion = MKCoordinateRegion(center: CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-//        map.setRegion(region, animated: true)
+        
         
         if contador < 3 {
-            //Maneira menos verbosa e mais rapida de centralizar localização de usuário no mapa
-            if let userCoordinates = locationManager.location?.coordinate {
-                let region = MKCoordinateRegion(center: userCoordinates, latitudinalMeters: 200, longitudinalMeters: 200)
-                map.setRegion(region, animated: true)
-                
-                contador += 1
-            }
+            centerMapLocation()
+            contador += 1
+        
         } else {
             locationManager.stopUpdatingLocation()
         }
         
         
     }
-    
-    
-    // metodo antigo
-//    // trata quando a autorização não é permitida
-//    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-//        
-//        let status = manager.authorizationStatus
-//        
-//        if status != .authorizedWhenInUse && status != .notDetermined {
-//            
-//            let title: String = "Permissão de localização"
-//            let msg: String = "Para que você possa caçar Pokemons, habilite sua localização!"
-//            
-//            // notificação de alerta
-//            let alertController = UIAlertController(title: title, message: msg, preferredStyle: .alert)
-//            
-//            // Botão de ação para abrir configurações
-//            let actionTitle: String = "Abrir configurações"
-//            
-//            let configAction = UIAlertAction(title: actionTitle, style: .default) { configAlert in
-//                
-//                if let config = NSURL(string: UIApplicationOpenNotificationSettingsURLString) {
-//                    UIApplication.shared.open(config as URL)
-//                }
-//            }
-//            // acao do botoa cancelar
-//            let cancellAction = UIAlertAction(title: "Cancelar", style: .default, handler: nil)
-//            
-//            //adiciona botoes de acao ao alert
-//            alertController.addAction(configAction)
-//            alertController.addAction(cancellAction)
-//            
-//            //apresenta alerta
-//            present(alertController, animated: true, completion: nil)
-//            
-//        }
-//    }
     
     // Metodo novo
     // Método chamado sempre que o status de permissão muda
@@ -154,4 +132,6 @@ extension GoPokemonHomeViewController: MKMapViewDelegate, CLLocationManagerDeleg
         present(alertController, animated: true)
     }
     
+   
+
 }
