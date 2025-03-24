@@ -21,6 +21,7 @@ class GoPokemonHomeViewController: UIViewController {
     
     private func setup(){
         
+        showPokemons()
         setupContentView()
         setupLocationManager()
         setHierarchy()
@@ -30,6 +31,27 @@ class GoPokemonHomeViewController: UIViewController {
     private func setupContentView(){
         let updateLocationButton = contentView.updateLocationButton
         updateLocationButton.addTarget(self, action: #selector(centerPlayer), for: .touchUpInside)
+    }
+    
+    private func showPokemons(){
+        //Agenda uma repeticao de codigo por depois de um tempo determinado
+        Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { Timer in
+            
+            if let coordenadas = self.locationManager.location?.coordinate {
+                let annotation = MKPointAnnotation()
+                
+                // Gera valores aleatorios para serem adicionados a latitude e longitude do usuário e gerar uma anotacao proxima e aleatoria
+                let latitudeAleatoria = ((Double(arc4random_uniform(300))) - 150) / 100000.0
+                let longitudeAleatoria = ((Double(arc4random_uniform(300))) - 150) / 100000.0
+                
+                annotation.coordinate = coordenadas
+                annotation.coordinate.latitude += latitudeAleatoria
+                annotation.coordinate.longitude += longitudeAleatoria
+                
+                self.contentView.mapView.addAnnotation(annotation)
+                
+            }
+        }
     }
     
     private func setHierarchy(){
