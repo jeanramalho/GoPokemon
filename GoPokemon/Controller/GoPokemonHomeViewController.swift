@@ -31,6 +31,8 @@ class GoPokemonHomeViewController: UIViewController {
     private func setupContentView(){
         let updateLocationButton = contentView.updateLocationButton
         updateLocationButton.addTarget(self, action: #selector(centerPlayer), for: .touchUpInside)
+        
+        self.contentView.mapView.delegate = self
     }
     
     private func showPokemons(){
@@ -154,6 +156,26 @@ extension GoPokemonHomeViewController: MKMapViewDelegate, CLLocationManagerDeleg
         present(alertController, animated: true)
     }
     
-   
+    //metodo chamado sempre que uma anotacao é chamada
+    func mapView(_ mapView: MKMapView, viewFor annotation: any MKAnnotation) -> MKAnnotationView? {
+        
+        let anotacaoView = MKAnnotationView(annotation: annotation, reuseIdentifier: nil)
+        
+        anotacaoView.image = UIImage(named: "player")
+        //Caso a anotacao seja a localizacao do usuario a imagem é do player caso nao é do pokemon
+        if annotation is MKUserLocation {
+            anotacaoView.image = UIImage(named: "player")
+        } else {
+            anotacaoView.image = UIImage(named: "pikachu-2")
+        }
+        
+        var frame = anotacaoView.frame
+        frame.size.width = 40
+        frame.size.height = 40
+        
+        anotacaoView.frame = frame
+        
+        return anotacaoView
+    }
 
 }
