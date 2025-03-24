@@ -12,6 +12,7 @@ class GoPokemonHomeViewController: UIViewController {
     
     let contentView: GoPokemonHomeView = GoPokemonHomeView()
     var locationManager = CLLocationManager()
+    var contador = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,10 +60,24 @@ extension GoPokemonHomeViewController: MKMapViewDelegate, CLLocationManagerDeleg
         let map = contentView.mapView
         map.showsUserLocation = true
         guard let location = locations.last else {return}
+//
+//        Maneira mais verbosa de centralizar localizacao do usuário no mapa
+//        let region: MKCoordinateRegion = MKCoordinateRegion(center: CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+//        map.setRegion(region, animated: true)
         
-        let region: MKCoordinateRegion = MKCoordinateRegion(center: CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+        if contador < 3 {
+            //Maneira menos verbosa e mais rapida de centralizar localização de usuário no mapa
+            if let userCoordinates = locationManager.location?.coordinate {
+                let region = MKCoordinateRegion(center: userCoordinates, latitudinalMeters: 200, longitudinalMeters: 200)
+                map.setRegion(region, animated: true)
+                
+                contador += 1
+            }
+        } else {
+            locationManager.stopUpdatingLocation()
+        }
         
-        map.setRegion(region, animated: true)
+        
     }
     
     
