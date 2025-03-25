@@ -39,6 +39,8 @@ class GoPokemonHomeViewController: UIViewController {
         let updateLocationButton = contentView.updateLocationButton
         updateLocationButton.addTarget(self, action: #selector(centerPlayer), for: .touchUpInside)
         
+        contentView.pokeAgendaButton.addTarget(self, action: #selector(showPokeAgenda), for: .touchUpInside)
+        
         self.contentView.mapView.delegate = self
     }
     
@@ -98,6 +100,15 @@ class GoPokemonHomeViewController: UIViewController {
     
     @objc private func centerPlayer(){
         centerMapLocation()
+    }
+    
+    @objc private func showPokeAgenda(){
+        let pokeAgenda = PokeAgendaViewController()
+        
+        pokeAgenda.modalPresentationStyle = .pageSheet
+        
+        present(pokeAgenda, animated: true, completion: nil)
+        
     }
     
     

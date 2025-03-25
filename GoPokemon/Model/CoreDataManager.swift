@@ -21,7 +21,7 @@ class CoreDataManager {
         
         persistentContainer.loadPersistentStores { (storeDescription, error) in
             if let erro = error {
-                fatalError("Erro ao carregar core data: \(error?.localizedDescription ?? "" )")
+                fatalError("Erro ao carregar core data: \(erro.localizedDescription )")
             }
             
         }
@@ -74,6 +74,21 @@ class CoreDataManager {
         newPokemon.capturado = capturado
         
         
+    }
+    
+    //MARK: - Filtra pokemons capturados
+    
+    func fetchPokemonsCapturados(capturado: Bool) -> [Pokemons] {
+        let fetchRequest: NSFetchRequest<Pokemons> = Pokemons.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "capturado = %@", NSNumber(value: capturado))
+        
+        do {
+            let pokemons = try context.fetch(fetchRequest)
+            return pokemons
+        } catch {
+            print("Erro ao localizar tasks: \(error.localizedDescription)")
+            return []
+        }
     }
     
     //MARK: - Carrega Pokemons
