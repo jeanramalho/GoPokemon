@@ -77,7 +77,11 @@ class CoreDataManager {
         let fetchRequest: NSFetchRequest<Pokemons> = Pokemons.fetchRequest()
         
         do {
-            let pokemons = try context.fetch(fetchRequest)
+            var pokemons = try context.fetch(fetchRequest)
+            if pokemons.count == 0 {
+                self.saveAllPokemons()
+                pokemons = self.buscaPokemons()
+            }
             return pokemons
         } catch {
             print("Erro ao localizar tasks: \(error.localizedDescription)")

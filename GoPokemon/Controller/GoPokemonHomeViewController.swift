@@ -13,6 +13,9 @@ class GoPokemonHomeViewController: UIViewController {
     let contentView: GoPokemonHomeView = GoPokemonHomeView()
     var locationManager = CLLocationManager()
     var contador = 0
+    var pokemons: [Pokemons] = []
+    var coreDataPokemons = CoreDataManager.shared
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,6 +23,8 @@ class GoPokemonHomeViewController: UIViewController {
     }
     
     private func setup(){
+        
+        pokemons = coreDataPokemons.buscaPokemons()
         
         showPokemons()
         setupContentView()
@@ -40,13 +45,19 @@ class GoPokemonHomeViewController: UIViewController {
         Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { Timer in
             
             if let coordenadas = self.locationManager.location?.coordinate {
-                let annotation = MKPointAnnotation()
+                
+                //Pega um pokemon aleatorio
+                let allPokemons = UInt32(self.pokemons.count)
+                let indexPokemonAleatorio = arc4random_uniform(allPokemons)
+                let pokemon = self.pokemons[Int(indexPokemonAleatorio)]
+                
+                let annotation = PokemonAnnotation(coordenadas: coordenadas, pokemon: pokemon)
                 
                 // Gera valores aleatorios para serem adicionados a latitude e longitude do usuário e gerar uma anotacao proxima e aleatoria
                 let latitudeAleatoria = ((Double(arc4random_uniform(300))) - 150) / 100000.0
                 let longitudeAleatoria = ((Double(arc4random_uniform(300))) - 150) / 100000.0
                 
-                annotation.coordinate = coordenadas
+        
                 annotation.coordinate.latitude += latitudeAleatoria
                 annotation.coordinate.longitude += longitudeAleatoria
                 
@@ -166,6 +177,9 @@ extension GoPokemonHomeViewController: MKMapViewDelegate, CLLocationManagerDeleg
         if annotation is MKUserLocation {
             anotacaoView.image = UIImage(named: "player")
         } else {
+            if let pokeAnnotation =  annotation as? PokemonAnnotation {
+                print(pokeAnnotation.pokemon.nomePokemon ?? "")
+            }
             anotacaoView.image = UIImage(named: "pikachu-2")
         }
         
