@@ -16,10 +16,14 @@ class CoreDataManager {
     
     private init(){
         
-        persistentContainer = NSPersistentContainer(name: "Pokemons")
+        //deve ser o nome do arquivo e nao da entidade
+        persistentContainer = NSPersistentContainer(name: "GoPokemon")
         
         persistentContainer.loadPersistentStores { (storeDescription, error) in
-            fatalError("Erro ao carregar core data: \(error?.localizedDescription ?? "" )")
+            if let erro = error {
+                fatalError("Erro ao carregar core data: \(error?.localizedDescription ?? "" )")
+            }
+            
         }
     }
     
@@ -57,7 +61,7 @@ class CoreDataManager {
         self.createPokemon(nomePokemon: "Caterpie", nomeImagem: "caterpie", capturado: false)
         self.createPokemon(nomePokemon: "Bullbasaur", nomeImagem: "bullbasaur", capturado: false)
         self.createPokemon(nomePokemon: "Bellsprout", nomeImagem: "bellsprout", capturado: false)
-
+        
         saveContext()
     }
     
@@ -78,10 +82,10 @@ class CoreDataManager {
         
         do {
             var pokemons = try context.fetch(fetchRequest)
-            if pokemons.count == 0 {
-                self.saveAllPokemons()
-                pokemons = self.buscaPokemons()
-            }
+            if pokemons.isEmpty {
+                        self.saveAllPokemons()
+                        pokemons = try context.fetch(fetchRequest) // Recarrega os Pokémon
+                    }
             return pokemons
         } catch {
             print("Erro ao localizar tasks: \(error.localizedDescription)")

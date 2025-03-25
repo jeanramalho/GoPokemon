@@ -23,8 +23,8 @@ class GoPokemonHomeViewController: UIViewController {
     }
     
     private func setup(){
-        
-        pokemons = coreDataPokemons.buscaPokemons()
+        self.pokemons = coreDataPokemons.buscaPokemons()
+
         
         showPokemons()
         setupContentView()
@@ -32,6 +32,8 @@ class GoPokemonHomeViewController: UIViewController {
         setHierarchy()
         setConstraints()
     }
+    
+
     
     private func setupContentView(){
         let updateLocationButton = contentView.updateLocationButton
@@ -178,9 +180,10 @@ extension GoPokemonHomeViewController: MKMapViewDelegate, CLLocationManagerDeleg
             anotacaoView.image = UIImage(named: "player")
         } else {
             if let pokeAnnotation =  annotation as? PokemonAnnotation {
-                print(pokeAnnotation.pokemon.nomePokemon ?? "")
+                let nomeImagemPokemon = pokeAnnotation.pokemon.nomeImagem ?? ""
+                anotacaoView.image = UIImage(named: nomeImagemPokemon)
             }
-            anotacaoView.image = UIImage(named: "pikachu-2")
+            
         }
         
         var frame = anotacaoView.frame
