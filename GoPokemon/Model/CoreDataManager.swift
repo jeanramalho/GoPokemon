@@ -50,7 +50,7 @@ class CoreDataManager {
     func saveAllPokemons(){
         
         self.createPokemon(nomePokemon: "Mew", nomeImagem: "mew", capturado: false)
-        self.createPokemon(nomePokemon: "zubat", nomeImagem: "zubat", capturado: false)
+        self.createPokemon(nomePokemon: "Zubat", nomeImagem: "zubat", capturado: false)
         self.createPokemon(nomePokemon: "Squirtle", nomeImagem: "squirtle", capturado: false)
         self.createPokemon(nomePokemon: "Snorlax", nomeImagem: "snorlax", capturado: false)
         self.createPokemon(nomePokemon: "Rattata", nomeImagem: "rattata", capturado: false)

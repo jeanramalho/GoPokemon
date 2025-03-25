@@ -217,10 +217,46 @@ extension GoPokemonHomeViewController: MKMapViewDelegate, CLLocationManagerDeleg
             return
         }
         
-        if let nomePokemon = pokemon.nomePokemon {
-            self.coreDataPokemons.updatePokemon(nomePokemon: nomePokemon, capturado: true)
+        if let coordAnotacao = anotacao?.coordinate {
+            let region = MKCoordinateRegion(center: coordAnotacao, latitudinalMeters: 200, longitudinalMeters: 200)
+            mapView.setRegion(region, animated: true)
         }
-        mapView.removeAnnotation(anotacao!)
+        
+        if let coord = self.locationManager.location?.coordinate {
+            let mapRect = self.contentView.mapView.visibleMapRect
+            
+            Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { Timer in
+                if mapRect.contains(MKMapPoint(coord)){
+                    if let nomePokemon = pokemon.nomePokemon {
+                        
+                        self.coreDataPokemons.updatePokemon(nomePokemon: nomePokemon, capturado: true)
+                        mapView.removeAnnotation(anotacao!)
+                        
+                        let alertController = UIAlertController(title: "Parabéns!", message: "você capturou o Pokemon: \(String(describing: pokemon.nomePokemon ?? ""))", preferredStyle: .alert)
+                        
+                        let ok = UIAlertAction(title: "OK", style: .default, handler: nil)
+                        alertController.addAction(ok)
+                        
+                        self.present(alertController, animated: true, completion: nil)
+                    }
+                } else {
+                    let alertController = UIAlertController(title: "Calma aí treinador!", message: "O Pokemon: \(String(describing: pokemon.nomePokemon ?? "")) está muito longe, cheguqe mais perto!", preferredStyle: .alert)
+                    
+                    let ok = UIAlertAction(title: "OK", style: .default, handler: nil)
+                    alertController.addAction(ok)
+                    
+                    self.present(alertController, animated: true, completion: nil)
+                    
+                    
+
+                }
+            }
+            
+        
+        }
+        
+        
+       
         
     }
 
