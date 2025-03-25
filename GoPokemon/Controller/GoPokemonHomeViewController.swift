@@ -220,7 +220,7 @@ extension GoPokemonHomeViewController: MKMapViewDelegate, CLLocationManagerDeleg
         if let nomePokemon = pokemon.nomePokemon {
             self.coreDataPokemons.updatePokemon(nomePokemon: nomePokemon, capturado: true)
         }
-        
+        mapView.removeAnnotation(anotacao!)
         
     }
 
