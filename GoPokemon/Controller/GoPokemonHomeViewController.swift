@@ -205,5 +205,23 @@ extension GoPokemonHomeViewController: MKMapViewDelegate, CLLocationManagerDeleg
         
         return anotacaoView
     }
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        
+        let anotacao = view.annotation
+        let pokemon = (view.annotation as! PokemonAnnotation).pokemon
+        
+        mapView.deselectAnnotation(anotacao, animated: true)
+        
+        if anotacao is MKUserLocation {
+            return
+        }
+        
+        if let nomePokemon = pokemon.nomePokemon {
+            self.coreDataPokemons.updatePokemon(nomePokemon: nomePokemon, capturado: true)
+        }
+        
+        
+    }
 
 }
